@@ -1,0 +1,26 @@
+{
+  "name": "ipfs-pin-proxy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app",
+    "dev": "nodemon -r dotenv/config app"
+  },
+  "author": "",
+  "license": "UNLICENSE",
+  "dependencies": {
+    "@koa/cors": "^3.4.1",
+    "axios": "^0.27.2",
+    "content-type": "^1.0.4",
+    "form-data": "^4.0.0",
+    "koa": "^2.13.4",
+    "koa-router": "^12.0.0",
+    "raw-body": "^2.5.1"
+  },
+  "devDependencies": {
+    "dotenv": "^16.0.3",
+    "nodemon": "^2.0.20",
+    "prettier": "^2.7.1"
+  }
+}
