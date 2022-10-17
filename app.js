@@ -21,19 +21,34 @@ const PostTimeout = 30000;
     try {
       const body = ctx.request.rawBody;
 
-      const w3sUpload = axios({
-        method: "post",
-        url: "https://api.web3.storage/upload",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${process.env.WEB3STORAGE_TOKEN}`,
-        },
-        data: body,
-        timeout: PostTimeout,
-      });
+      // const w3sUpload = axios({
+      //   method: "post",
+      //   url: "https://api.web3.storage/upload",
+      //   headers: {
+      //     Accept: "application/json",
+      //     Authorization: `Bearer ${process.env.WEB3STORAGE_TOKEN}`,
+      //   },
+      //   data: body,
+      //   timeout: PostTimeout,
+      // });
 
       const formData = new FormData();
-      formData.append("file", body, "img");
+      formData.append("data", body, "img");
+
+      const estuaryUpload = axios({
+        method: "post",
+        url: "https://upload.estuary.tech/content/add",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${process.env.ESTUARY_KEY}`,
+        },
+        data: formData,
+        timeout: PostTimeout,
+      });
+      // console.log(await estuaryUpload);
+
+      const formData2 = new FormData();
+      formData2.append("file", body, "img");
 
       const localUpload = axios({
         method: "post",
@@ -45,10 +60,14 @@ const PostTimeout = 30000;
         data: formData,
         timeout: PostTimeout,
       });
-      const [w3sRes, localRes] = await Promise.all([w3sUpload, localUpload]);
+      const [w3sRes, localRes] = await Promise.all([
+        estuaryUpload,
+        localUpload,
+      ]);
+      console.log(w3sRes, localRes);
       const cid = localRes.data.Hash;
       const cid1 = w3sRes.data.cid;
-      ctx.body = cid === cid1 ? { cid } : { cid, web3storage_cid: cid1 };
+      ctx.body = cid === cid1 ? { cid } : { cid, estuary_cid: cid1 };
     } catch (e) {
       ctx.body = `err: ${e}`;
     }
