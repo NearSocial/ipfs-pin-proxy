@@ -45,7 +45,6 @@ const PostTimeout = 30000;
         data: formData,
         timeout: PostTimeout,
       });
-      // console.log(await estuaryUpload);
 
       const formData2 = new FormData();
       formData2.append("file", body, "img");
@@ -57,14 +56,14 @@ const PostTimeout = 30000;
           Accept: "application/json",
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        data: formData,
+        data: formData2,
         timeout: PostTimeout,
       });
       const [w3sRes, localRes] = await Promise.all([
         estuaryUpload,
         localUpload,
       ]);
-      console.log(w3sRes, localRes);
+      // console.log(w3sRes, localRes);
       const cid = localRes.data.Hash;
       const cid1 = w3sRes.data.cid;
       ctx.body = cid === cid1 ? { cid } : { cid, estuary_cid: cid1 };
