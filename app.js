@@ -1,5 +1,6 @@
 require("dotenv").config();
 const cors = require("@koa/cors");
+const fs = require("fs");
 
 const FormData = require("form-data");
 const contentType = require("content-type");
@@ -31,23 +32,27 @@ const PostTimeout = 30000;
       //   data: body,
       //   timeout: PostTimeout,
       // });
-
-      const formData = new FormData();
-      formData.append("data", body, "img");
-
-      const estuaryUpload = axios({
-        method: "post",
-        url: "https://upload.estuary.tech/content/add",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${process.env.ESTUARY_KEY}`,
-        },
-        data: formData,
-        timeout: PostTimeout,
-      });
+      //
+      // const formData = new FormData();
+      // formData.append("data", body, "img");
+      //
+      // const estuaryUpload = axios({
+      //   method: "post",
+      //   url: "https://upload.estuary.tech/content/add",
+      //   headers: {
+      //     Accept: "application/json",
+      //     Authorization: `Bearer ${process.env.ESTUARY_KEY}`,
+      //   },
+      //   data: formData,
+      //   timeout: PostTimeout,
+      // });
 
       const formData2 = new FormData();
       formData2.append("file", body, "img");
+
+      console.log("Uploading to local node. Size:", body.length);
+
+      // fs.appendFileSync("uploads.txt", "test" + "\n");
 
       const localUpload = axios({
         method: "post",
@@ -59,15 +64,18 @@ const PostTimeout = 30000;
         data: formData2,
         timeout: PostTimeout,
       });
-      const [w3sRes, localRes] = await Promise.all([
-        estuaryUpload,
-        localUpload,
-      ]);
-      // console.log(w3sRes, localRes);
+      // const [w3sRes, localRes] = await Promise.all([
+      //   estuaryUpload,
+      //   localUpload,
+      // ]);
+      const localRes = await localUpload;
       const cid = localRes.data.Hash;
-      const cid1 = w3sRes.data.cid;
-      ctx.body = cid === cid1 ? { cid } : { cid, estuary_cid: cid1 };
+
+      fs.appendFileSync("uploads.txt", cid + "\n");
+
+      ctx.body = { cid };
     } catch (e) {
+      console.log("failed", e.toString());
       ctx.body = `err: ${e}`;
     }
   });
