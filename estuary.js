@@ -35,11 +35,9 @@ function loadJson(filename, ignore) {
     uploads: {},
     success: {},
   };
-  // const fn = `uploads-${Date.now()}.txt`;
+  const fn = `uploads-${Date.now()}.txt`;
 
-  // await fsPromises.rename("uploads.txt", fn);
-
-  const fn = "uploads.txt";
+  await fsPromises.rename("uploads.txt", fn);
   try {
     const uploads = fs.readFileSync(fn, "utf8").trim().split("\n");
     uploads.forEach((upload) => {
