@@ -33,3 +33,5 @@ neardev
 .DS_Store
 uploads.txt
 estuary.json
+logs
+estuary_logs
