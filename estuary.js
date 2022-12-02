@@ -36,9 +36,8 @@ function loadJson(filename, ignore) {
     success: {},
   };
   const fn = `uploads-${Date.now()}.txt`;
-
-  await fsPromises.rename("uploads.txt", fn);
   try {
+    await fsPromises.rename("uploads.txt", fn);
     const uploads = fs.readFileSync(fn, "utf8").trim().split("\n");
     uploads.forEach((upload) => {
       if (estuary.success[upload]) {
