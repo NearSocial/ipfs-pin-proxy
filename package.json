@@ -1,10 +1,11 @@
 {
   "name": "ipfs-pin-proxy",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "",
   "main": "app.js",
   "scripts": {
     "start": "node app",
+    "estuary": "node estuary",
     "dev": "nodemon -r dotenv/config app"
   },
   "author": "",
