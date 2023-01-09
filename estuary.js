@@ -60,6 +60,8 @@ function loadJson(filename, ignore) {
         method: "get",
         url: "https://ipfs.near.social/ipfs/" + upload,
         timeout: PostTimeout,
+        Referer: "https://near.social/",
+        "Referrer-Policy": "strict-origin-when-cross-origin",
       });
       const body = res.data;
 
