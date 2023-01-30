@@ -68,9 +68,17 @@ function loadJson(filename, ignore) {
       const body = res.data;
 
       const formData = new FormData();
-      formData.append("data", body, "img");
+      try {
+        formData.append("data", body, "img");
 
-      console.log(`Uploading ${body.length} bytes:`, upload);
+        console.log(`Uploading ${body.length} bytes:`, upload);
+      } catch (e) {
+        estuary.success[upload] = false;
+        delete estuary.uploads[upload];
+        saveJson(estuary, "estuary.json");
+        throw e;
+      }
+
       await axios({
         method: "post",
         url: "https://upload.estuary.tech/content/add",
