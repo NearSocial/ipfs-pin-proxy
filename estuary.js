@@ -64,12 +64,16 @@ function loadJson(filename, ignore) {
           Referer: "https://near.social/",
           "Referrer-Policy": "strict-origin-when-cross-origin",
         },
+        responseType: "arraybuffer",
       });
+
       const body = res.data;
+      const contentType = res.headers["content-type"];
+      console.log("Fetched:", body.length, contentType, upload);
 
       const formData = new FormData();
       try {
-        formData.append("data", body, "img");
+        formData.append("data", res.data, { filename: upload, contentType });
 
         console.log(`Uploading ${body.length} bytes:`, upload);
       } catch (e) {
@@ -79,22 +83,26 @@ function loadJson(filename, ignore) {
         throw e;
       }
 
-      await axios({
+      const upRes = await axios({
         method: "post",
-        url: "https://upload.estuary.tech/content/add",
+        url: "https://api.estuary.tech/content/add",
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${process.env.ESTUARY_KEY}`,
+          ...formData.getHeaders(),
         },
         data: formData,
         timeout: PostTimeout,
       });
+
+      console.log("Uploaded:", upRes.data.cid);
 
       estuary.success[upload] = true;
       delete estuary.uploads[upload];
       saveJson(estuary, "estuary.json");
     } catch (e) {
       console.error(e.toString());
+      console.log(e);
       break;
     }
   }
